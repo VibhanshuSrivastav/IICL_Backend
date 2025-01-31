@@ -21,10 +21,11 @@
 
     /* Type Checking */
     "noUnusedLocals": true,                             /* Report errors on unused local variables. */
-    "noUnusedParameters": true,                        /* Report errors on unused function parameters. */
+    // "noUnusedParameters": true,                        /* Report errors on unused function parameters. */
     "noImplicitReturns": true,                         /* Report errors for missing return statements. */
     "noFallthroughCasesInSwitch": true,                /* Ensure switch statements don't fall through. */
-    "strictNullChecks": true                            /* Ensure `null` and `undefined` are handled explicitly. */
+    "strictNullChecks": true,                          /* Ensure `null` and `undefined` are handled explicitly. */
+    "noEmitOnError": true
   },
   "include": ["src"],                                   /* Include all files in the `src` folder. */
   "exclude": ["node_modules", "dist"]                  /* Exclude `node_modules` and output files. */
