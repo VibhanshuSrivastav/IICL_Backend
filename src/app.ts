@@ -1,14 +1,20 @@
 import express from 'express';
-import cors from 'cors';
-import routes from './routes'; // Centralized routes
+import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
+// import adminRoutes from './routes/admin';
+// import franchiseRoutes from './routes/franchise';
+import authRoutes from './routes/auth';
+
+dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json()); // Middleware to parse JSON requests
 
-// Routes
-app.use('/api', routes);
+app.use('/auth', authRoutes);
+// app.use('/admin', adminRoutes);
+// app.use('/franchise', franchiseRoutes);
 
-export default app;
+
+
+    export default app;
