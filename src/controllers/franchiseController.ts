@@ -3,8 +3,7 @@ import FormData from '../models/FormData.js';
 
 export const submitFranchiseForm = async (req: Request, res: Response) => {
     try {
-        console.log('hitting submitFranchiseForm');
-        console.log('Received form data:', req.body);
+        console.log('hitting submitFranchiseForm', req.body);
 
         // Save data to MongoDB
         const newForm = new FormData(req.body);
