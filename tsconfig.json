@@ -1,32 +1,14 @@
 {
   "compilerOptions": {
-    /* Basic Options */
-    "target": "ES2020",                                 /* Target modern JavaScript version for better performance. */
-    "module": "commonjs",                               /* Use CommonJS modules for Node.js compatibility. */
-    "rootDir": "./src",                                 /* Specify the root folder for your TypeScript files. */
-    "outDir": "./dist",                                 /* Output compiled files to the `dist` directory. */
-    "strict": true,                                     /* Enable all strict type-checking options. */
-    "esModuleInterop": true,                            /* Enable compatibility for importing CommonJS modules. */
-    "forceConsistentCasingInFileNames": true,           /* Enforce case-sensitive imports. */
-    "skipLibCheck": true,                               /* Skip type checking for declaration files. */
-
-    /* Module Resolution Options */
-    "moduleResolution": "node",                        /* Resolve modules in Node.js style. */
-    "resolveJsonModule": true,                         /* Enable importing JSON files. */
-    "allowSyntheticDefaultImports": true,              /* Allow default imports for modules with no default export. */
-
-    /* Emit Options */
-    "sourceMap": true,                                  /* Generate source map files for debugging. */
-    "declaration": true,                                /* Generate `.d.ts` declaration files. */
-
-    /* Type Checking */
-    "noUnusedLocals": true,                             /* Report errors on unused local variables. */
-    // "noUnusedParameters": true,                        /* Report errors on unused function parameters. */
-    "noImplicitReturns": true,                         /* Report errors for missing return statements. */
-    "noFallthroughCasesInSwitch": true,                /* Ensure switch statements don't fall through. */
-    "strictNullChecks": true,                          /* Ensure `null` and `undefined` are handled explicitly. */
-    "noEmitOnError": true
+    "module": "NodeNext",   
+    "moduleResolution": "NodeNext",
+    "target": "ESNext",  
+    "outDir": "./dist", 
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
-  "include": ["src"],                                   /* Include all files in the `src` folder. */
-  "exclude": ["node_modules", "dist"]                  /* Exclude `node_modules` and output files. */
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
