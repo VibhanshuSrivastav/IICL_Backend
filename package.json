@@ -5,15 +5,15 @@
   "type": "module",
   "main": "./dist/server.js",
   "scripts": {
-    "dev": "nodemon --watch src --exec ts-node ./src/server.ts",
+    "dev": "nodemon --watch src --exec node --loader ts-node/esm ./src/server.ts",
     "build": "tsc",
-    "start": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node --loader ts-node/esm src/server.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -23,6 +23,7 @@
     "nodemon": "^3.1.9"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/body-parser": "^1.19.2",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",

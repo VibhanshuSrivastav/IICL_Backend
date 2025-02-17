@@ -7,7 +7,14 @@ import router from './routes/index.js';
 dotenv.config();
 const app = express();
 
-app.use(cors());
+// ✅ Proper CORS Configuration
+app.use(cors({
+  origin: "http://localhost:3000", // Allow frontend origin
+  credentials: true, // Allow cookies if needed
+  methods: "GET,POST,PUT,DELETE", // Allowed HTTP methods
+  allowedHeaders: "Content-Type,Authorization", // Allowed headers
+}));
+
 app.use(express.json());
 
 // Database Connection
