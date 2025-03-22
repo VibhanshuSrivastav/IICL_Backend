@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 export const getUsersDashboard = (req: Request, res: Response): void => {
   // Example logic to send data to the view
   const dashboardData = {
-    message: 'Welcome to the Users Dashboard',
+    message: 'Welcome to the Users Dashboard Page',
   };
   res.status(200).json(dashboardData);
 };
