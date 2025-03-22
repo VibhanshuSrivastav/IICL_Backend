@@ -1,11 +1,15 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const app_1 = __importDefault(require("./app"));
-const PORT = process.env.PORT || 3000;
-app_1.default.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
-//# sourceMappingURL=server.js.map
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import connectDB from './config/db.js';
+import franchiseRoutes from './routes/franchiseRoutes.js';
+dotenv.config();
+const app = express();
+app.use(cors());
+app.use(express.json());
+// Database Connection
+connectDB();
+// Routes
+app.use('/api/franchise', franchiseRoutes);
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

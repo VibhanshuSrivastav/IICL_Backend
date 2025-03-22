@@ -1,11 +1,10 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const app = (0, express_1.default)();
-// Middleware and routes
-app.use(express_1.default.json());
-exports.default = app;
-//# sourceMappingURL=app.js.map
+import express from 'express';
+import cors from 'cors';
+import router from './routes/index.js';
+const app = express();
+// Middleware
+app.use(cors());
+app.use(express.json());
+// Routes
+app.use('/api', router);
+export default app;
