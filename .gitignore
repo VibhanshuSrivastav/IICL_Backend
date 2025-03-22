@@ -1,2 +1,24 @@
-.env
+# Ignore node_modules directory
 node_modules/
+
+# Ignore .env files (to avoid committing sensitive information like API keys, passwords, etc.)
+.env
+
+# Ignore log files
+*.log
+
+# Ignore the dist directory (for compiled TypeScript files)
+dist/
+
+# Ignore npm debug log
+npm-debug.log*
+
+# Ignore VS Code settings (if you're using VS Code as your editor)
+.vscode/
+
+# Ignore other OS-specific files
+.DS_Store   # macOS
+Thumbs.db   # Windows
+
+# Ignore typescript build output (optional, only if you have a build step)
+*.tsbuildinfo
