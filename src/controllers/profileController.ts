@@ -1,20 +1,17 @@
-import express from 'express';
-import { getProfileData } from '../services/profileDataServices.js';
+// controllers/profileController.ts
+import { Request, Response, NextFunction } from 'express';
+import { getFranchiseProfileService } from '../services/profileDataServices.js';
 
-const router = express.Router();
-
-router.post('/profile-data', async (req, res) => {
+/**
+ * Controller to handle GET requests for franchise profiles.
+ * Expects a route parameter `franchiseId`.
+ */
+export const getFranchiseProfileController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-	const userId = req.body.userId;
-	const profileData = await getProfileData(userId);
-	res.json(profileData);
+    const { franchiseId } = req.params;
+    const profiles = await getFranchiseProfileService(franchiseId);
+    res.status(200).json(profiles);
   } catch (error) {
-	if (error instanceof Error) {
-	  res.status(500).send(error.message);
-	} else {
-	  res.status(500).send('An unknown error occurred');
-	}
+    next(error);
   }
-});
-
-export default router; 
+};

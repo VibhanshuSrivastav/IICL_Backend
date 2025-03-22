@@ -7,6 +7,6 @@ const router = express.Router();
 router.post('/add-batch', addBatch);
 
 // Route to get all batches
-router.get('/fetch', fetchBatch);
+router.get('/get-batches/:franchiseId', fetchBatch);
 
 export default router;

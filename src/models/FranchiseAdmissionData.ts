@@ -8,11 +8,14 @@ export interface IFranchiseAdmission extends Document {
     dob: string;
     directorName: string;
     instituteName: string;
+    city:string;
+    state:string;
     address: string;
     mobile: string;
     email: string;
     aadharId: string;
     password: string;
+    franchiseId:number;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -24,11 +27,14 @@ const FranchiseAdmissionSchema = new Schema<IFranchiseAdmission>(
         dob: { type: String, required: true },
         directorName: { type: String, required: true },
         instituteName: { type: String, required: true },
+        city:{type: String, required:true},
+        state:{type:String, required:true},
         address: { type: String, required: true },
         mobile: { type: String, required: true, unique: true },
         email: { type: String, required: true, unique: true },
         aadharId: { type: String, required: true },
         password: { type: String, required: true },
+        franchiseId:{type : Number}
     },
     { timestamps: true }
 );

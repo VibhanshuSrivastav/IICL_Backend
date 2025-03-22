@@ -17,8 +17,9 @@ export const addBatch = async (req: Request, res: Response): Promise<void> => {
 // Function to get all batches
 export const fetchBatch = async (req: Request, res: Response): Promise<void> => {
     try {
+      const franchiseId = req.params.franchiseId;
         console.log('Fetching batches...');
-        const batches = await BatchModel.find();
+        const batches = await BatchModel.find({franchiseId});
         res.status(200).json(batches);
     } catch (error) {
         const errorMessage = (error as Error).message;

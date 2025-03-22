@@ -5,6 +5,8 @@ import franchiseRoutes from './franchiseRoutes.js'; // ✅ Import Franchise Rout
 import batchRoutes from './batchRoutes.js'; // ✅ Import Batch Routes
 import contactUsRoutes from './contactUsRoutes.js'; // ✅ Import Contact Us Routes
 import profileRoutes from './profileRoutes.js'; // ✅ Import Profile Routes
+import studentRoutes from './studentRoutes.js'; // ✅ Import student Routes
+import coursesRoutes from './coursesRoutes.js'
 const router = express.Router();
 
 router.use('/admin', adminRoutes);
@@ -13,4 +15,6 @@ router.use('/franchise', franchiseRoutes); // ✅ Add Franchise Routes
 router.use('/batch', batchRoutes); // ✅ Add Batch Routes
 router.use('/contact', contactUsRoutes); // ✅ Add Contact Us Routes
 router.use('/profile', profileRoutes); // ✅ Add Profile Routes
+router.use('/student', studentRoutes);
+router.use('/course', coursesRoutes);
 export default router;
