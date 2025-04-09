@@ -1,19 +1,10 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
-import { Session, SessionData } from 'express-session';
 import bcrypt from 'bcrypt';
 
 import FormDataModel from '../models/FormData.js';
 import FranchiseAdmissionModel from '../models/FranchiseAdmissionData.js';
 import { editFranchiseDataByAdminService, getFranchiseService } from '../services/franchiseServices.js';
 
-interface CustomSessionData extends SessionData {
-  franchiseId?: string | number;
-  email?: string;
-}
-
-interface CustomRequest extends Request {
-  session: Session & CustomSessionData;
-}
 
 // Submit Franchise Form
 export const submitFranchiseForm = async (req: Request, res: Response): Promise<void> => {
@@ -43,10 +34,6 @@ export const franchiseLogin: RequestHandler = async (req: Request, res: Response
         res.status(401).json({ success: false, message: 'Invalid Password' });
         return
     }
-
-    (req.session as CustomSessionData).franchiseId = franchise.franchiseId;
-    (req.session as CustomSessionData).email = franchise.email;
-
     res.status(200).json({
       success: true,
       message: 'Login successful',
@@ -57,23 +44,6 @@ export const franchiseLogin: RequestHandler = async (req: Request, res: Response
     if (!res.headersSent) {
       res.status(500).json({ success: false, message: 'Failed to login' });
     }
-  }
-};
-
-// Franchise Logout
-export const franchiseLogout = (req: Request, res: Response): void => {
-  try {
-    req.session.destroy((err) => {
-      if (err) {
-        console.error('Error during logout:', err);
-        return res.status(500).json({ success: false, message: 'Failed to logout' });
-      }
-
-      res.status(200).json({ success: true, message: 'Logout successful' });
-    });
-  } catch (error) {
-    console.error('Unexpected error during logout:', error);
-    res.status(500).json({ success: false, message: 'Failed to logout' });
   }
 };
 
@@ -102,10 +72,20 @@ export const addFranchiseByAdmin = async (req: Request, res: Response): Promise<
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newFranchise = new FranchiseAdmissionModel({
-      firstName, lastName, dob, directorName, instituteName,
-      city, state, address, mobile, email, aadharId,
+      firstName, 
+      lastName, 
+      dob, 
+      directorName, 
+      instituteName,
+      city, 
+      state, 
+      address, 
+      mobile, 
+      email, 
+      aadharId,
       password: hashedPassword,
-      franchiseId
+      franchiseId,
+      role:"franchise"
     });
 
     await newFranchise.save();

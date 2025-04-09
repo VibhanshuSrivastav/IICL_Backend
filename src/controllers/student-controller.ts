@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { setStudentDataService, getStudentListDataService, getStudentDataService, editStudentDataByEnrollmentId,getAllStudentsService, addStudentMarks, getStudentMarksByEnrollmentIdService, editStudentMarksByEnrollmentIdService, deleteStudentMarksByEnrollmentIdService } from '../services/studentServices.js';
+import { setStudentDataService, getStudentListDataService, getStudentDataService, editStudentDataByEnrollmentId,getAllStudentsService, addStudentMarks, getStudentMarksByEnrollmentIdService, editStudentMarksByEnrollmentIdService, deleteStudentMarksByEnrollmentIdService, getAllStudentListDataService } from '../services/studentServices.js';
 
 export const setStudentData = async (req: Request, res: Response) => {
     try {
@@ -29,6 +29,38 @@ export const setStudentData = async (req: Request, res: Response) => {
     try {
       const franchiseId = req.params.franchiseId;
       const students = await getStudentListDataService(franchiseId);
+  
+      if (!students || students.length === 0) {
+        res.status(404).json({ error: "No students found" });
+        return;
+      }
+  
+      // Map over each student and convert the image buffer to a base64 string (if available)
+      const studentsWithImages = students.map((student) => {
+        let imageBase64 = "";
+        if (student.image && student.image.data) {
+          imageBase64 = student.image.data.toString("base64");
+        }
+        return {
+          ...student.toObject(),
+          imageBase64, // Include the base64 image in the response
+        };
+      });
+  
+      res.status(200).json(studentsWithImages);
+    } catch (error: any) {
+      next(error);
+    }
+  };
+
+  export const getAllStudentsListData = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+    
+      const students = await getAllStudentListDataService();
   
       if (!students || students.length === 0) {
         res.status(404).json({ error: "No students found" });

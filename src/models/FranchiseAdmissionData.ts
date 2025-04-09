@@ -16,6 +16,8 @@ export interface IFranchiseAdmission extends Document {
     aadharId: string;
     password: string;
     franchiseId:number;
+    adminId:number;
+    role:string;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -34,7 +36,9 @@ const FranchiseAdmissionSchema = new Schema<IFranchiseAdmission>(
         email: { type: String, required: true, unique: true },
         aadharId: { type: String, required: true },
         password: { type: String, required: true },
-        franchiseId:{type : Number}
+        franchiseId:{type : Number},
+        adminId:{type:Number},
+        role:{type: String},
     },
     { timestamps: true }
 );
