@@ -25,6 +25,14 @@ export const setStudentDataService = async (studentData: any) => {
     }
   };
 
+  export const getAllStudentListDataService = async (): Promise<IStudent[]> => {
+    try {
+      const students = await StudentModel.find({});
+      return students;
+    } catch (error) {
+      throw new Error("Error retrieving all student data");
+    }
+  };
 
   export const getStudentDataService = async (enrollmentId: string): Promise<IStudent| null> => {
     try {
