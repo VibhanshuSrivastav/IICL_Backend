@@ -26,7 +26,7 @@ app.use(express.json());
 // Configure session middleware (adjust options as needed)
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
-  throw new Error("SESSION_SECRET is not defined in environment variables.");
+  throw new Error("SESSION_SECRET is not defined in environment variables...");
 }
 
 app.use(
