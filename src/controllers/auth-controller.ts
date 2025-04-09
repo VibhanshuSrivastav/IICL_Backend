@@ -38,6 +38,6 @@ export const franchiseLogoutController = (req: Request, res: Response) => {
     }
     res.clearCookie("connect.sid");
     res.clearCookie("user");
-    return res.status(200).json({ message: "Logout successful", clearLocalStorage: true });
+    return res.status(200).json({ message: "Logout successful...", clearLocalStorage: true });
   });
 };
