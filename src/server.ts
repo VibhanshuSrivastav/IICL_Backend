@@ -8,46 +8,56 @@ import session from 'express-session';
 dotenv.config();
 const app = express();
 
+// ✅ Trust reverse proxy (like Nginx or AWS ELB) in production
 if (process.env.NODE_ENV === "production") {
-  app.set("trust proxy", 1); // Trust first proxy (e.g., Nginx or ELB)
+  app.set("trust proxy", 1); // Required for secure cookies behind a proxy
 }
 
+// ✅ Determine allowed frontend origins
+const allowedOrigins = process.env.NODE_ENV === "production"
+  ? ["https://iicleducation.in"]  // 🔁 Replace with your actual domain
+  : ["http://localhost:3000"];
 
-// ✅ Proper CORS Configuration
+// ✅ Configure CORS
 app.use(cors({
-  origin: "http://localhost:3000", // Allow frontend origin   
-  credentials: true, // Allow cookies if needed
-  methods: "GET,POST,PUT,DELETE", // Allowed HTTP methods
-  allowedHeaders: "Content-Type,Authorization", // Allowed headers
+  origin: allowedOrigins,
+  credentials: true,
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
 }));
 
+// ✅ Parse JSON body
 app.use(express.json());
 
-// Configure session middleware (adjust options as needed)
+// ✅ Session Secret check
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
   throw new Error("SESSION_SECRET is not defined in environment variables...");
 }
 
-app.use(
-  session({
-    secret: sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-    },
-  })
-);
+// ✅ Session middleware
+app.use(session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",       // ⬅️ required for HTTPS
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // ⬅️ for cross-origin cookies
+    maxAge: 12 * 60 * 60 * 1000, // ⏱️ Optional: 12 hours
+  },
+}));
+
 console.log("Running in", process.env.NODE_ENV, "mode");
 
-
-// Database Connection
+// ✅ Connect to DB
 connectDB();
 
-// Routes
+// ✅ Mount routes
 app.use('/api', router);
 
+// ✅ Start server
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
