@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import router from './routes/index.js';
 import session from 'express-session';
+import MongoStore from 'connect-mongo';
 
 dotenv.config();
 const app = express();
@@ -36,17 +37,23 @@ if (!sessionSecret) {
 }
 
 // ✅ Session middleware
-app.use(session({
-  secret: sessionSecret,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",       // ⬅️ required for HTTPS
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // ⬅️ for cross-origin cookies
-    maxAge: 12 * 60 * 60 * 1000, // ⏱️ Optional: 12 hours
-  },
-}));
+app.use(
+  session({
+    name: "connect.sid",
+    secret: process.env.SESSION_SECRET!,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI!,
+    }),
+    cookie: {
+      httpOnly: true,
+      secure: true,        // 👈 true for HTTPS
+      sameSite: "none",    // 👈 required for cross-site
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  })
+);
 
 console.log("Running in", process.env.NODE_ENV, "mode");
 
