@@ -113,6 +113,45 @@ export const getFranchiseData = async (req: Request, res: Response, next: NextFu
   }
 };
 
+// Get Franchise Data by ID
+export const getFranchiseDataById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const franchise = await FranchiseAdmissionModel.findById(req.params._id);
+
+    if (!franchise) {
+      res.status(404).json({ success: false, message: 'Franchise not found' });
+      return 
+    }
+
+    res.status(200).json(franchise);
+  } catch (error) {
+    console.error('Error getting franchise data by ID:', error);
+    next(error);
+  }
+};
+
+// Delete Franchise Data by Admin
+export const deleteFranchiseDataByAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const franchiseId = req.params._id;
+    const deletedFranchise = await FranchiseAdmissionModel.findByIdAndDelete(franchiseId);
+
+    if (!deletedFranchise) {
+      res.status(404).json({ success: false, message: 'Franchise not found' });
+      return 
+    }
+
+    res.status(200).json({ success: true, message: 'Franchise deleted successfully!' });
+  } catch (error) {
+    console.error('Error deleting franchise:', error);
+    next(error);
+  }
+};
+
 // Edit Franchise Data by Admin
 export const editFranchiseDataByAdmin = async (
   req: Request,

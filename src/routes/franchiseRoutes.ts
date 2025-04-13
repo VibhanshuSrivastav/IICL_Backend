@@ -1,5 +1,11 @@
 import express from 'express';
-import {  addFranchiseByAdmin, editFranchiseDataByAdmin, franchiseLogin, getFranchiseData, submitFranchiseForm } from '../controllers/franchiseController.js';
+import {  addFranchiseByAdmin,
+     editFranchiseDataByAdmin,
+      franchiseLogin,
+       getFranchiseData,
+        submitFranchiseForm,
+         getFranchiseDataById,
+         deleteFranchiseDataByAdmin } from '../controllers/franchiseController.js';
 
 const router = express.Router();
 
@@ -7,7 +13,8 @@ const router = express.Router();
 router.post('/franchise-enquiry', submitFranchiseForm);
 router.post('/franchise-login',franchiseLogin);
 router.post('/add-franchise', addFranchiseByAdmin);
+router.get('/get-franchise/:_id', getFranchiseDataById);
 router.get('/get-franchises', getFranchiseData);
-router.put("/add-franchise/:_id", editFranchiseDataByAdmin);
-
+router.put("/edit-franchise/:_id", editFranchiseDataByAdmin);
+router.delete("/delete-franchise/:_id", deleteFranchiseDataByAdmin);
 export default router;
