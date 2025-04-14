@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  changePasswordController,
   franchiseLoginController,
   franchiseLogoutController,
 } from "../controllers/auth-controller.js";
@@ -13,6 +14,7 @@ router.post("/login", franchiseLoginController);
 
 // Logout route
 router.post("/logout", franchiseLogoutController);
+router.post("/change-password", changePasswordController);
 
 
 export default router;

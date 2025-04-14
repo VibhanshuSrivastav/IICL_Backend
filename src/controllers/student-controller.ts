@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { setStudentDataService, getStudentListDataService, getStudentDataService, editStudentDataByEnrollmentId,getAllStudentsService, addStudentMarks, getStudentMarksByEnrollmentIdService, editStudentMarksByEnrollmentIdService, deleteStudentMarksByEnrollmentIdService, getAllStudentListDataService } from '../services/studentServices.js';
+import { setStudentDataService, getStudentListDataService, getStudentDataService, editStudentDataByEnrollmentId,getAllStudentsService, addStudentMarks, getStudentMarksByEnrollmentIdService, editStudentMarksByEnrollmentIdService, deleteStudentMarksByEnrollmentIdService, getAllStudentListDataService, deleteStudentService } from '../services/studentServices.js';
 
 export const setStudentData = async (req: Request, res: Response) => {
     try {
@@ -253,6 +253,33 @@ export const deleteStudentMarksByEnrollmentId = async (
     res.status(200).json({ status: true, message: "Mark deleted successfully" });
   } catch (error: any) {
     next(error);
+  }
+};
+
+export const deleteStudentController = async ( 
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const studentId = req.params.studentId;
+
+    if (!studentId) {
+      res.status(400).json({ status: false, message: "Student ID is required" });
+      return;
+    }
+
+    const deletionResult = await deleteStudentService(studentId);
+
+    if (!deletionResult) {
+      res.status(404).json({ status: false, message: "Student not found" });
+      return;
+    }
+
+    res.status(200).json({ status: true, message: "Student deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting student:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
 

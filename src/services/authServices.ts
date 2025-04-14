@@ -2,6 +2,7 @@ import { Request } from "express";
 import FranchiseAdmissionModel from "../models/FranchiseAdmissionData.js";
 import studentModel from "../models/studentModel.js";
 // import StudentModel from "../models/StudentModel.js"; // Uncomment if you want to include student data
+import bcrypt from "bcrypt";
 
 interface LoginResult {
   user: {
@@ -56,4 +57,22 @@ export const franchiseLoginService = async (
     message: "Login successful",
     ...(data && { data }),
   };
+};
+
+export const changePasswordService = async (
+  email: string,
+  newPassword: string
+): Promise<string> => {
+  const user = await FranchiseAdmissionModel.findOne({ email });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+  await FranchiseAdmissionModel.updateOne({ email }, { password: hashedPassword });
+
+  return "Password changed successfully";
 };
