@@ -46,12 +46,12 @@ app.use(
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI!,
     }),
-    cookie: {
-      httpOnly: true,
-      secure: true,        // 👈 true for HTTPS
-      sameSite: "none",    // 👈 required for cross-site
-      maxAge: 24 * 60 * 60 * 1000,
-    },
+    // cookie: {
+    //   httpOnly: true,
+    //   secure: true,        // 👈 true for HTTPS
+    //   sameSite: "none",    // 👈 required for cross-site
+    //   maxAge: 24 * 60 * 60 * 1000,
+    // },
   })
 );
 

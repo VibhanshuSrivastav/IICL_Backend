@@ -25,3 +25,20 @@ export const getCourseData = async (req: Request, res: Response):Promise<void> =
         res.status(500).json({error: "Failed to get course data", details:errorMessage});
     }
 }
+
+export const deleteCourseData = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { courseId } = req.params;  // Destructuring based on your route param
+        const deletedCourse = await CourseModel.findByIdAndDelete(courseId);
+        
+        if (!deletedCourse) {
+            res.status(404).json({ error: 'Course not found' });
+            return;
+        }
+        
+        res.status(200).json({ message: 'Course deleted successfully' });
+    } catch (error) {
+        const errorMessage = (error as Error).message;
+        res.status(500).json({ error: 'Failed to delete course', details: errorMessage });
+    }
+};

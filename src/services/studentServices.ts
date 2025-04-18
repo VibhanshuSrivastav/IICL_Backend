@@ -34,14 +34,7 @@ export const setStudentDataService = async (studentData: any) => {
     }
   };
 
-  export const getStudentDataService = async (enrollmentId: string): Promise<IStudent| null> => {
-    try {
-      const student = await StudentModel.findOne({ enrollmentId });
-      return student;
-    } catch (error) {
-      throw new Error("Error retrieving student data");
-    }
-  };
+
 
   export const editStudentDataByEnrollmentId = async (
     enrollmentId: string,

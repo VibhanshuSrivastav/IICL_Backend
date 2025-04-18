@@ -8,9 +8,11 @@ import profileRoutes from './profileRoutes.js'; // ✅ Import Profile Routes
 import studentRoutes from './studentRoutes.js'; // ✅ Import student Routes
 import coursesRoutes from './coursesRoutes.js';
 import authRoutes from './authRoutes.js';
+import studentDetailsRoutes from './studentDetailsRoutes.js'; // ✅ Import Student Details Routes
 import { isAuthenticated } from '../middlewares/auth-middlewares.js';
 const router = express.Router();
 
+router.use('/studentDetails', studentDetailsRoutes); // ✅ Add Student Routes
 router.use('/auth', authRoutes);
 router.use('/contact', contactUsRoutes); // ✅ Add Contact Us Routes
 router.use(isAuthenticated);

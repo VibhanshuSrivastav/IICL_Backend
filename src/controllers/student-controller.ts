@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { setStudentDataService, getStudentListDataService, getStudentDataService, editStudentDataByEnrollmentId,getAllStudentsService, addStudentMarks, getStudentMarksByEnrollmentIdService, editStudentMarksByEnrollmentIdService, deleteStudentMarksByEnrollmentIdService, getAllStudentListDataService, deleteStudentService } from '../services/studentServices.js';
+import { setStudentDataService, getStudentListDataService, editStudentDataByEnrollmentId,getAllStudentsService, addStudentMarks, getStudentMarksByEnrollmentIdService, editStudentMarksByEnrollmentIdService, deleteStudentMarksByEnrollmentIdService, getAllStudentListDataService, deleteStudentService } from '../services/studentServices.js';
 
 export const setStudentData = async (req: Request, res: Response) => {
     try {
@@ -86,39 +86,6 @@ export const setStudentData = async (req: Request, res: Response) => {
   };
 
 
-  export const getStudentDataByEnrollmentId = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      const enrollmentId = req.params.enrollmentId;
-      const student = await getStudentDataService(enrollmentId);
-  
-      if (!student) {
-        res.status(404).json({ error: "No student found" });
-        return;
-      }
-  
-      // Convert the Mongoose document to a plain JavaScript object.
-      const studentObj = student.toObject();
-  
-      // If the student has an image, convert its buffer to a Base64 string.
-      if (studentObj.image && studentObj.image.data) {
-        // You can either return just the base64 string...
-        studentObj.imageBase64 = studentObj.image.data.toString("base64");
-  
-        // ...or create a full data URL using the content type.
-        // For example:
-        // studentObj.imageUrl = `data:${studentObj.image.contentType};base64,${studentObj.image.data.toString("base64")}`;
-      }
-  
-      res.status(200).json(studentObj);
-    } catch (error: any) {
-      next(error);
-    }
-  };
-  
 export const getAllStudents = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const students = await getAllStudentsService();
@@ -283,7 +250,4 @@ export const deleteStudentController = async (
   }
 };
 
-  
 
-  
-  
