@@ -43,7 +43,7 @@ app.use(
     secret: process.env.SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({  
+    store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI!,
     }),
     cookie: {
@@ -54,6 +54,7 @@ app.use(
     },
   })
 );
+
 
 console.log("Running in", process.env.NODE_ENV, "mode");
 

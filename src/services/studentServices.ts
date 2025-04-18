@@ -173,4 +173,14 @@ export const setStudentDataService = async (studentData: any) => {
         throw new Error(`Error deleting student mark: ${error.message}`);
       }
     };
+
+    export const deleteStudentService = async (studentId: string) => {
+      try {
+        const deletedStudent = await StudentModel.findByIdAndDelete(studentId);
+        return deletedStudent; // Returns the deleted document or null if not found
+      } catch (error: any) {
+        console.error("Error in deleteStudentService:", error);
+        throw new Error(`Error deleting student: ${error.message}`);
+      }
+    };
     
