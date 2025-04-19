@@ -1,7 +1,8 @@
 // studentRoutes.ts
 import express from 'express';
 import multer from 'multer';
-import { setStudentData, getStudentsListData,getStudentDataByEnrollmentId, editStudentDataByEnrollmentIdController, getAllStudents, addEditStudentMarksByEnrollmentId, getStudentMarksByEnrollmentId, deleteStudentMarksByEnrollmentId, editStudentMarksByEnrollmentId, getAllStudentsListData, deleteStudentController } from '../controllers/student-controller.js';
+import { setStudentData, getStudentsListData, editStudentDataByEnrollmentIdController, getAllStudents, addEditStudentMarksByEnrollmentId, getStudentMarksByEnrollmentId, deleteStudentMarksByEnrollmentId, editStudentMarksByEnrollmentId, getAllStudentsListData, deleteStudentController } from '../controllers/student-controller.js';
+import { getStudentDataByEnrollmentId } from '../controllers/studentDetails-controller.js';
 
 const router = express.Router();
 
