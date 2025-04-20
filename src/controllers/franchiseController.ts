@@ -52,7 +52,7 @@ export const addFranchiseByAdmin = async (req: Request, res: Response): Promise<
   try {
     const {
       firstName, lastName, dob, directorName, instituteName,
-      city, state, address, mobile, email, aadharId, password, franchiseId,
+      city, state, address, mobile, email, aadharId, password, franchiseId,centerId
     } = req.body;
 
     // Basic validation
@@ -85,6 +85,7 @@ export const addFranchiseByAdmin = async (req: Request, res: Response): Promise<
       aadharId,
       password: hashedPassword,
       franchiseId,
+      centerId,
       role:"franchise"
     });
 
