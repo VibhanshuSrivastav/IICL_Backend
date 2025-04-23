@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { setStudentDataService, getStudentListDataService, editStudentDataByEnrollmentId,getAllStudentsService, addStudentMarks, getStudentMarksByEnrollmentIdService, editStudentMarksByEnrollmentIdService, deleteStudentMarksByEnrollmentIdService, getAllStudentListDataService, deleteStudentService } from '../services/studentServices.js';
+import { setStudentDataService, getStudentListDataService, editStudentDataByEnrollmentId,getAllStudentsService, addStudentMarks, getStudentMarksByEnrollmentIdService, editStudentMarksByEnrollmentIdService, deleteStudentMarksByEnrollmentIdService, getAllStudentListDataService, deleteStudentService, setIssueDateForStudentService } from '../services/studentServices.js';
 
 export const setStudentData = async (req: Request, res: Response) => {
     try {
@@ -251,3 +251,31 @@ export const deleteStudentController = async (
 };
 
 
+// Controller to set the issue date for a student's certificate
+export const setStudentIssueDateByEnrollmentId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { enrollmentId } = req.params; // Get the enrollment ID from the URL parameter
+    const { issueDate } = req.body; // Get the issue date from the request body
+    
+    if (!issueDate) {
+      res.status(400).json({ status: false, message: "Issue date is required" });
+      return;
+    }
+
+    // Assuming you have a service function to update the issue date for the student
+    const updatedStudent = await setIssueDateForStudentService(enrollmentId, issueDate);
+    
+    if (!updatedStudent) {
+      res.status(404).json({ status: false, message: "Student not found" });
+      return;
+    }
+
+    res.status(200).json({ status: true, message: "Issue date updated successfully", data: updatedStudent });
+  } catch (error: any) {
+    next(error);
+  }
+};
