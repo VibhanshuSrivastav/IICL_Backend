@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { setStudentDataService, getStudentListDataService, editStudentDataByEnrollmentId,getAllStudentsService, addStudentMarks, getStudentMarksByEnrollmentIdService, editStudentMarksByEnrollmentIdService, deleteStudentMarksByEnrollmentIdService, getAllStudentListDataService, deleteStudentService, setIssueDateForStudentService } from '../services/studentServices.js';
+import { setStudentDataService, getStudentListDataService, editStudentDataByEnrollmentId,getAllStudentsService, addStudentMarks, getStudentMarksByEnrollmentIdService, editStudentMarksByEnrollmentIdService, deleteStudentMarksByEnrollmentIdService, getAllStudentListDataService, deleteStudentService, setIssueDateForStudentService, setStudentCertificationStatusService } from '../services/studentServices.js';
 
 export const setStudentData = async (req: Request, res: Response) => {
     try {
@@ -275,6 +275,34 @@ export const setStudentIssueDateByEnrollmentId = async (
     }
 
     res.status(200).json({ status: true, message: "Issue date updated successfully", data: updatedStudent });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+
+export const updateStudentCertificationStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { enrollmentId } = req.params; 
+    const { status } = req.body; 
+
+    if (!status || !["enable", "disable"].includes(status)) {
+      res.status(400).json({ status: false, message: "Invalid or missing status" });
+      return;
+    }
+
+    const updatedStudent = await setStudentCertificationStatusService(enrollmentId, status);
+
+    if (!updatedStudent) {
+      res.status(404).json({ status: false, message: "Student not found" });
+      return;
+    }
+
+    res.status(200).json({ status: true, message: "Certification status updated successfully", data: updatedStudent });
   } catch (error: any) {
     next(error);
   }
