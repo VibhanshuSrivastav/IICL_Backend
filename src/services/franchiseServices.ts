@@ -1,3 +1,4 @@
+import FormDataModel, { IFormData } from "../models/FormData.js";
 import FranchiseAdmissionModel from "../models/FranchiseAdmissionData.js";
 import { IFranchiseAdmission } from "../models/FranchiseAdmissionData.js";
 import bcrypt from 'bcrypt';
@@ -32,5 +33,24 @@ export const editFranchiseDataByAdminService = async (_id: string, updatedData: 
     return updatedFranchise;
   } catch (error) {
     throw error;
+  }
+};
+
+export const getFranchiseEnquiryService = async (): Promise<IFormData[]> => {
+  try {
+    const franchiseEnquiry = await FormDataModel.find();
+    return franchiseEnquiry;
+  } catch (error) {
+    throw new Error(`Error fetching franchise data: ${error}`);
+  }
+};
+
+export const deleteFranchiseEnquiryService = async (id: string) => {
+  try {
+    const result = await FormDataModel.findByIdAndDelete(id);
+    return result
+  } catch (error: any) {
+    console.error("Error in deleteFranchiseEnquiryService:", error);
+    throw new Error("Error deleting franchise enquiry");
   }
 };

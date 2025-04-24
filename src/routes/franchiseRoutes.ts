@@ -5,7 +5,9 @@ import {  addFranchiseByAdmin,
        getFranchiseData,
         submitFranchiseForm,
          getFranchiseDataById,
-         deleteFranchiseDataByAdmin } from '../controllers/franchiseController.js';
+         deleteFranchiseDataByAdmin, 
+         getFranchiseEnquiry,
+         deleteFranchiseEnquiryController} from '../controllers/franchiseController.js';
 
 const router = express.Router();
 
@@ -17,4 +19,6 @@ router.get('/get-franchise/:_id', getFranchiseDataById);
 router.get('/get-franchises', getFranchiseData);
 router.put("/edit-franchise/:_id", editFranchiseDataByAdmin);
 router.delete("/delete-franchise/:_id", deleteFranchiseDataByAdmin);
+router.get('/get-franchise-enquiry', getFranchiseEnquiry);
+router.delete('/delete-franchise-enquiry/:id', deleteFranchiseEnquiryController);
 export default router;

@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 
 import FormDataModel from '../models/FormData.js';
 import FranchiseAdmissionModel from '../models/FranchiseAdmissionData.js';
-import { editFranchiseDataByAdminService, getFranchiseService } from '../services/franchiseServices.js';
+import { deleteFranchiseEnquiryService, editFranchiseDataByAdminService, getFranchiseEnquiryService, getFranchiseService } from '../services/franchiseServices.js';
 
 
 // Submit Franchise Form
@@ -164,6 +164,51 @@ export const editFranchiseDataByAdmin = async (
     res.status(200).json(updatedFranchise);
   } catch (error) {
     console.error('Error editing franchise:', error);
+    next(error);
+  }
+};
+
+export const getFranchiseEnquiry = async (
+  req:Request,
+  res:Response,
+  next:NextFunction
+):Promise<void> => {
+  try {
+    
+    const getFranchiseEnquiryData = await getFranchiseEnquiryService();
+
+    if (!getFranchiseEnquiryData) {
+      res.status(404).json({ success: false, message: 'Franchise enquiry not found' });
+      return 
+    }
+
+    res.status(200).json(getFranchiseEnquiryData);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const deleteFranchiseEnquiryController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      res.status(400).json({ success: false, message: "Enquiry ID is required" });
+      return;
+    }
+
+    const deleted = await deleteFranchiseEnquiryService(id);
+    if (!deleted) {
+      res.status(404).json({ success: false, message: "Enquiry not found" });
+      return;
+    }
+
+    res.status(200).json({ success: true, message: `Enquiry deleted successfully` });
+  } catch (error: any) {
+    console.error("Error in deleteFranchiseEnquiryController:", error);
     next(error);
   }
 };
