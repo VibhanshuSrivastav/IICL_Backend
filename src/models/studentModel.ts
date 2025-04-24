@@ -34,6 +34,7 @@ export interface IStudent extends Document {
   enrollmentId: string;
   registrationId:string;
   marks:IMark[];
+  issueDate?: string; // New field to store the issue date
 }
 
 const StudentSchema: Schema = new Schema({
@@ -69,6 +70,7 @@ const StudentSchema: Schema = new Schema({
       practicalObtainedMarks: { type: Number, required: true },
     },
   ],
+  issueDate: { type: String, default: null }, // Add issue date field
 });
 
 export default mongoose.model<IStudent>('Student', StudentSchema);

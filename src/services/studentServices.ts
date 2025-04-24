@@ -177,3 +177,20 @@ export const setStudentDataService = async (studentData: any) => {
       }
     };
     
+    // Service function to update the issue date for a student in the database
+    export const setIssueDateForStudentService = async (
+      enrollmentId: string,
+      issueDate: string
+    ): Promise<IStudent | null> => {
+      try {
+        const updatedStudent = await StudentModel.findOneAndUpdate(
+          { enrollmentId },
+          { issueDate }, // Update the issue date
+          { new: true }
+        );
+        return updatedStudent;
+      } catch (error) {
+        console.error("Error updating issue date:", error);
+        throw new Error("Error updating issue date");
+      }
+    };
