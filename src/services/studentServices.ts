@@ -194,3 +194,20 @@ export const setStudentDataService = async (studentData: any) => {
         throw new Error("Error updating issue date");
       }
     };
+
+export const setStudentCertificationStatusService = async (
+  enrollmentId: string,
+  certificationStatus: boolean
+): Promise<IStudent | null> => {
+  try {
+    const updatedStudent = await StudentModel.findOneAndUpdate(
+      { enrollmentId },
+      { certificationStatus },
+      { new: true }
+    );
+    return updatedStudent;
+  } catch (error) {
+    console.error("Error updating certification status:", error);
+    throw new Error("Error updating certification status");
+  }
+};

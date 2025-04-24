@@ -61,6 +61,7 @@ const StudentSchema: Schema = new Schema({
   franchiseId: { type: String, required: true },
   enrollmentId: { type: String, required: true },
   registrationId: { type: String, required: true },
+  certificationStatus: {type: String},
   marks: [
     {
       subject: { type: String, required: true },
