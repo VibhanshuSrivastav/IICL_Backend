@@ -25,10 +25,9 @@ const upload = multer({ storage });
 // Apply the middleware to the /add-student endpoint
 router.post('/add-student', upload.single('image'), setStudentData);
 router.get("/get-studentsList/:franchiseId", getStudentsListData);
-router.get("/get-all-students", getAllStudentsListData);
+router.get("/get-all-students", getAllStudents); // Paginated endpoint
 router.get("/get-studentData/:enrollmentId", getStudentDataByEnrollmentId)
 router.put("/edit-studentData/:enrollmentId",upload.single('image'), editStudentDataByEnrollmentIdController);
-router.get('/get-all-students', getAllStudents);
 router.post("/addEditStudentMarks/:enrollmentId", addEditStudentMarksByEnrollmentId);
 router.get("/marks/:enrollmentId", getStudentMarksByEnrollmentId);
 router.delete('/marks/:enrollmentId', deleteStudentMarksByEnrollmentId);

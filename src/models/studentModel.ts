@@ -72,6 +72,6 @@ const StudentSchema: Schema = new Schema({
     },
   ],
   issueDate: { type: String, default: null }, // Add issue date field
-});
+}, { timestamps: true }); // Enable createdAt and updatedAt for consistent sorting
 
 export default mongoose.model<IStudent>('Student', StudentSchema);

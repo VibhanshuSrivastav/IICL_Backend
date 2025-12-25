@@ -14,17 +14,42 @@ if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1); // Required for secure cookies behind a proxy
 }
 
+// ✅ Determine environment
+const isProduction = process.env.NODE_ENV === "production";
+
 // ✅ Determine allowed frontend origins
-const allowedOrigins = process.env.NODE_ENV === "production"
-  ? ["https://iicleducation.in"]  // 🔁 Replace with your actual domain
-  : ["http://localhost:3000"];
+const allowedOrigins = isProduction
+  ? ["https://iicleducation.in"]  // Production domain
+  : ["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000", "http://127.0.0.1:5173"]; // Frontend dev ports
 
 // ✅ Configure CORS
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, or same-origin requests)
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+    
+    // In development, also allow any localhost origin for flexibility
+    if (!isProduction && (origin.startsWith("http://localhost:") || origin.startsWith("http://127.0.0.1:"))) {
+      callback(null, true);
+      return;
+    }
+    
+    // Reject if not allowed
+    callback(new Error(`Not allowed by CORS. Origin: ${origin}`));
+  },
   credentials: true,
-  methods: "GET,POST,PUT,DELETE",
-  allowedHeaders: "Content-Type,Authorization",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+  exposedHeaders: ["Set-Cookie"],
+  optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
 }));
 
 // ✅ Parse JSON body
@@ -48,15 +73,14 @@ app.use(
     }),
     cookie: {
       httpOnly: true,
-      secure: true,        // 👈 true for HTTPS
-      sameSite: "none",    // 👈 required for cross-site
+      secure: isProduction,  // 👈 true for HTTPS in production, false for local
+      sameSite: isProduction ? "none" : "lax",  // 👈 "none" for cross-site in production, "lax" for local
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
 
-
-console.log("Running in", process.env.NODE_ENV, "mode");
+console.log("Running in", isProduction ? "PRODUCTION" : "DEVELOPMENT", "mode");
 
 // ✅ Connect to DB
 connectDB();
@@ -67,5 +91,5 @@ app.use('/api', router);
 // ✅ Start server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  // Server started
 });

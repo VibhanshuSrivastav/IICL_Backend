@@ -1,6 +1,7 @@
 import StudentModel from '../models/studentModel.js';
 import { IStudent } from '../models/studentModel.js';
-import {IMark} from '../models/studentModel.js'
+import {IMark} from '../models/studentModel.js';
+import FranchiseAdmissionModel from '../models/FranchiseAdmissionData.js';
 
 export const setStudentDataService = async (studentData: any) => {
     try {
@@ -58,12 +59,109 @@ export const setStudentDataService = async (studentData: any) => {
     }
   };
 
-    export const getAllStudentsService = async (): Promise<IStudent[]> => {
+    export const getAllStudentsService = async (
+        page: number = 1,
+        limit: number = 10,
+        search: string = ""
+    ): Promise<{ students: IStudent[]; total: number; page: number; limit: number; totalPages: number }> => {
         try {
-            const students = await StudentModel.find();
-            return students;
-        } catch (error) {
-            throw new Error("Error retrieving all students");
+            const skip = (page - 1) * limit;
+            
+            // Build search query - search in name and email fields (case-insensitive)
+            let searchQuery: any = {};
+            if (search && search.trim() !== "") {
+                const searchRegex = new RegExp(search.trim(), "i"); // Case-insensitive regex
+                searchQuery = {
+                    $or: [
+                        { name: searchRegex },
+                        { email: searchRegex },
+                        { enrollmentId: searchRegex },
+                        { phone: searchRegex }
+                    ]
+                };
+            }
+            
+            // Get total count and paginated students in parallel
+            // Sort by _id descending for consistent pagination (newest first)
+            // _id is always present and contains timestamp, ensuring stable pagination
+            // This prevents duplicate/missing records when navigating between pages
+            const [students, total] = await Promise.all([
+                StudentModel.find(searchQuery)
+                    .sort({ _id: -1 }) // Sort by _id descending (newest first) for consistent pagination
+                    .skip(skip)
+                    .limit(limit)
+                    .lean(), // Use lean() for better performance with large datasets
+                StudentModel.countDocuments(searchQuery)
+            ]);
+
+            // Get unique franchiseIds from students
+            const franchiseIds = [...new Set(students.map((s: any) => s.franchiseId).filter(Boolean))];
+
+            // Fetch franchise information by franchiseId
+            // Convert string franchiseId to number for matching (franchise model has franchiseId as number)
+            // Convert all franchiseIds to numbers and filter out invalid ones
+            const franchiseIdNumbers = franchiseIds
+                .map((id: string) => Number(id))
+                .filter((num: number) => !isNaN(num));
+
+            const franchises = franchiseIdNumbers.length > 0
+                ? await FranchiseAdmissionModel.find({
+                    franchiseId: { $in: franchiseIdNumbers }
+                }).select('franchiseId instituteName centerId').lean()
+                : [];
+
+            // Get unique centerIds from franchise records
+            const centerIds = [...new Set(franchises.map((f: any) => f.centerId).filter(Boolean))];
+
+            // Fetch center information by centerId
+            // Center name might be stored in another franchise record with matching centerId
+            const centers = await FranchiseAdmissionModel.find({
+                centerId: { $in: centerIds }
+            }).select('centerId instituteName').lean();
+
+            // Create lookup maps for quick access
+            const franchiseMap = new Map(
+                franchises.map((f: any) => [
+                    String(f.franchiseId),
+                    {
+                        franchiseName: f.instituteName || 'N/A',
+                        centerId: f.centerId || null
+                    }
+                ])
+            );
+            const centerMap = new Map(
+                centers.map((c: any) => [
+                    c.centerId,
+                    c.instituteName || 'N/A'
+                ])
+            );
+
+            // Enrich students with franchise and center names
+            const studentsWithDetails = students.map((student: any) => {
+                const franchiseInfo = franchiseMap.get(String(student.franchiseId));
+                const franchiseName = franchiseInfo?.franchiseName || 'N/A';
+                const centerId = franchiseInfo?.centerId || null;
+                const centerName = centerId ? (centerMap.get(centerId) || 'N/A') : 'N/A';
+
+                return {
+                    ...student,
+                    franchiseName,
+                    centerName
+                };
+            });
+
+            const totalPages = Math.ceil(total / limit);
+
+            return {
+                students: studentsWithDetails,
+                total,
+                page,
+                limit,
+                totalPages
+            };
+        } catch (error: any) {
+            console.error("Error in getAllStudentsService:", error);
+            throw new Error(`Error retrieving all students: ${error.message}`);
         }
     };
   

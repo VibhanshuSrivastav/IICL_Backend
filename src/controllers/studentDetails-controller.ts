@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { getStudentDataService } from '../services/studentDetailsServices.js';
+import { getStudentDataService, getStudentDataWithFranchiseAndCenterService } from '../services/studentDetailsServices.js';
 
 
 //checkStudentExistsController
@@ -42,20 +42,23 @@ export const checkStudentExistsController = async (
           res.status(400).json({ error: "Enrollment ID is required" });
             return;
         }
-        const student = await getStudentDataService(enrollmentId);
+        
+        // Get student data with franchise and center information
+        const studentObj = await getStudentDataWithFranchiseAndCenterService(enrollmentId);
     
-        if (!student) {
+        if (!studentObj) {
           res.status(404).json({ error: "No student found" });
           return;
         }
     
-        // Convert the Mongoose document to a plain JavaScript object.
-        const studentObj = student.toObject();
-    
         // If the student has an image, convert its buffer to a Base64 string.
         if (studentObj.image && studentObj.image.data) {
-          // You can either return just the base64 string...
-          studentObj.imageBase64 = studentObj.image.data.toString("base64");
+          // Handle both Buffer and already converted base64
+          if (Buffer.isBuffer(studentObj.image.data)) {
+            studentObj.imageBase64 = studentObj.image.data.toString("base64");
+          } else {
+            studentObj.imageBase64 = studentObj.image.data;
+          }
     
           // ...or create a full data URL using the content type.
           // For example:

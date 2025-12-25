@@ -88,26 +88,63 @@ export const setStudentData = async (req: Request, res: Response) => {
 
 export const getAllStudents = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const students = await getAllStudentsService();
+        // Get pagination parameters from query string (default: page=1, limit=10)
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+        const search = (req.query.search as string) || ""; // Get search parameter
 
-        if (!students || students.length === 0) {
-            res.status(404).json({ error: "No students found" });
+        // Validate pagination parameters
+        if (page < 1) {
+            res.status(400).json({ error: "Page number must be greater than 0" });
+            return;
+        }
+        if (limit < 1 || limit > 100) {
+            res.status(400).json({ error: "Limit must be between 1 and 100" });
+            return;
+        }
+
+        const result = await getAllStudentsService(page, limit, search);
+
+        if (!result.students || result.students.length === 0) {
+            res.status(200).json({
+                students: [],
+                pagination: {
+                    total: result.total,
+                    page: result.page,
+                    limit: result.limit,
+                    totalPages: result.totalPages
+                }
+            });
             return;
         }
 
         // Map over each student and convert the image buffer to a base64 string (if available)
-        const studentsWithImages = students.map((student) => {
+        // Note: Using lean() in service, so students are already plain objects
+        const studentsWithImages = result.students.map((student: any) => {
             let imageBase64 = "";
             if (student.image && student.image.data) {
-                imageBase64 = student.image.data.toString("base64");
+                // Handle both Buffer and already converted base64
+                if (Buffer.isBuffer(student.image.data)) {
+                    imageBase64 = student.image.data.toString("base64");
+                } else {
+                    imageBase64 = student.image.data;
+                }
             }
             return {
-                ...student.toObject(),
+                ...student,
                 imageBase64, // Include the base64 image in the response
             };
         });
 
-        res.status(200).json(studentsWithImages);
+        res.status(200).json({
+            students: studentsWithImages,
+            pagination: {
+                total: result.total,
+                page: result.page,
+                limit: result.limit,
+                totalPages: result.totalPages
+            }
+        });
     } catch (error: any) {
         next(error);
     }
